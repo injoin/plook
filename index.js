@@ -19,13 +19,21 @@ app.route( "/:package/:version/*" ).get(function( req, res ) {
     var command = bower.commands.lookup( req.params.package );
 
     command.on( "end", function( pkg ) {
-        var slug = getSlug( pkg.url );
-        var url = getGithubUrl( slug );
+        var slug, url;
+
+        if ( !pkg ) {
+            return res.send( 404, "Not Found" );
+        }
+
+        slug = getSlug( pkg.url );
+        url = getGithubUrl( slug );
         url += req.params.version + "/";
         url += req.params[ 0 ];
 
         https.get( url, function( ghResp ) {
+            res.statusCode = ghResp.statusCode;
             res.set( "X-Expanded-Url", url );
+
             ghResp.pipe( res );
         });
     });
