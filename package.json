@@ -7,6 +7,9 @@
         "compression": "~1.0.8",
         "express": "~4.5.1"
     },
+    "engines": {
+        "node": ">=0.10.20"
+    },
     "homepage": "https://github.com/injoin/plook",
     "repository": {
         "type": "git",
