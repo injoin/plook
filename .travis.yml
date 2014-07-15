@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+- "0.10"
+
+deploy:
+  provider: heroku
+  api_key: "${HEROKU_TOKEN}"
+
+env:
+  global:
+    # HEROKU_TOKEN
+    - secure: cozbRwLXSAlRkOF5wD+SN9NdL0j6wWNaIbiVMfK0c96tpUGuT0s3j2/oaklzXcoSVEiZLWwGa8EC0BvtmJZiyfEAFMfBbKuu9xpBJ/P7zjuhtZYjObguI8S0T9wknI1fAQZFZl5X2ekheaOZIKohzUlR66NzrlI33wJlDUuY9+g=
