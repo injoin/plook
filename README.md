@@ -1,2 +1,2 @@
-# Blook
-Bower lookup service.
+# Plook
+Package lookup service for Bower.
