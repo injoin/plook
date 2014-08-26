@@ -5,6 +5,9 @@ node_js:
 deploy:
   provider: heroku
   api_key: "${HEROKU_TOKEN}"
+  on:
+    all_branches: true
+    tags: true
 
 env:
   global:
