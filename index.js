@@ -33,7 +33,7 @@ app.route( "/:package/:version/*" ).get(function( req, res ) {
         var slug = pkg ? getSlug( pkg.url ) : null;
 
         if ( !pkg || !slug ) {
-            return send( 404 );
+            return send( res, 404 );
         }
 
         url = getGithubUrl( slug );
@@ -45,7 +45,7 @@ app.route( "/:package/:version/*" ).get(function( req, res ) {
             var status = ghResp.statusCode;
 
             if ( status >= 400 ) {
-                return send( status, url );
+                return send( res, status, url );
             }
 
             res.statusCode = status;
@@ -55,15 +55,10 @@ app.route( "/:package/:version/*" ).get(function( req, res ) {
             ghResp.pipe( res );
         });
     });
+});
 
-    function send( status, url ) {
-        res.set( "Content-Type", "text/plain" );
-        if ( url ) {
-            res.set( EXPANDED_URL_HEADER, url );
-        }
-
-        return res.send( status, STATUS_CODES[ status ] );
-    }
+app.route( "/*" ).all(function( req, res ) {
+    send( res, 404 );
 });
 
 app.listen( process.env.PORT || 3000, function() {
@@ -94,4 +89,13 @@ function findMimetype( url, ghResp ) {
     // content-type (which is usually plain text or octet-stream).
     // Otherwise, we simply use the mime module returned value.
     return type === mime.default_type ? ghResp.headers[ "content-type" ] : type;
+}
+
+function send( res, status, url ) {
+    res.set( "Content-Type", "text/plain" );
+    if ( url ) {
+        res.set( EXPANDED_URL_HEADER, url );
+    }
+
+    return res.send( status, STATUS_CODES[ status ] );
 }
