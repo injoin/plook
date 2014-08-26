@@ -1,5 +1,10 @@
 "use strict";
 
+// Constants
+var STATUS_CODES = require( "http" ).STATUS_CODES;
+var EXPANDED_URL_HEADER = "X-Expanded-Url";
+
+// Modules
 var https = require( "https" );
 var bower = require( "bower" );
 var mime = require( "mime" );
@@ -24,27 +29,41 @@ app.route( "/:package/:version/*" ).get(function( req, res ) {
     var command = bower.commands.lookup( req.params.package );
 
     command.on( "end", function( pkg ) {
-        var slug, url;
+        var url;
+        var slug = pkg ? getSlug( pkg.url ) : null;
 
-        if ( !pkg ) {
-            return res.send( 404, "Not Found" );
+        if ( !pkg || !slug ) {
+            return send( 404 );
         }
 
-        slug = getSlug( pkg.url );
         url = getGithubUrl( slug );
         url += req.params.version + "/";
         url += req.params[ 0 ];
 
         https.get( url, function( ghResp ) {
             var type = findMimetype( url, ghResp );
+            var status = ghResp.statusCode;
 
-            res.statusCode = ghResp.statusCode;
+            if ( status >= 400 ) {
+                return send( status, url );
+            }
+
+            res.statusCode = status;
             res.set( "Content-Type", type );
-            res.set( "X-Expanded-Url", url );
+            res.set( EXPANDED_URL_HEADER, url );
 
             ghResp.pipe( res );
         });
     });
+
+    function send( status, url ) {
+        res.set( "Content-Type", "text/plain" );
+        if ( url ) {
+            res.set( EXPANDED_URL_HEADER, url );
+        }
+
+        return res.send( status, STATUS_CODES[ status ] );
+    }
 });
 
 app.listen( process.env.PORT || 3000, function() {
@@ -54,10 +73,14 @@ app.listen( process.env.PORT || 3000, function() {
 // -------------------------------------------------------------------------------------------------
 
 function getSlug( url ) {
-    url = url.replace( "git://github.com/", "" );
-    url = url.replace( /\.git$/, "" );
+    // Regexp taken from
+    // https://github.com/bower/bower/blob/337c0f2d0adc4a04a8c282f8fa2eef85b48616a4/lib/core/resolvers/GitHubResolver.js#L114
+    var match = url.match( /(?:@|:\/\/)github.com[:\/]([^\/\s]+?)\/([^\/\s]+?)(?:\.git)?\/?$/i );
+    if ( !match ) {
+        return;
+    }
 
-    return url;
+    return match[ 1 ] + "/" + match[ 2 ];
 }
 
 function getGithubUrl( slug ) {
