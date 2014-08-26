@@ -8,6 +8,7 @@ var EXPANDED_URL_HEADER = "X-Expanded-Url";
 var https = require( "https" );
 var bower = require( "bower" );
 var mime = require( "mime" );
+var url = require( "url" );
 
 // Express and middlewares
 var express = require( "express" );
@@ -27,6 +28,7 @@ app.use( compression({
 }));
 
 app.route( "/:package/:version/*" ).get(function( req, res ) {
+    var reqEtag = req.get( "if-none-match" );
     var pkgname = req.params.package;
     var ver = req.params.version.trim().replace( /^v/, "" );
 
@@ -48,25 +50,33 @@ app.route( "/:package/:version/*" ).get(function( req, res ) {
 
             promises = [ "v", "" ].map(function( prefix ) {
                 return new Promise(function( resolve, reject ) {
-                    var url = getGithubUrl(slug);
-                    url += prefix + ver + "/";
-                    url += req.params[ 0 ];
+                    var options;
+                    var ghUrl = getGithubUrl( slug );
+                    ghUrl += prefix + ver + "/";
+                    ghUrl += req.params[ 0 ];
 
-                    https.get( url, function( ghResp ) {
+                    options = url.parse( ghUrl );
+                    options.headers = {
+                        "if-none-match": reqEtag
+                    };
+
+                    https.get( options, function( ghResp ) {
                         var method = ghResp.statusCode >= 400 ? reject : resolve;
                         method({
                             gh: ghResp,
-                            url: url
+                            url: ghUrl
                         });
                     });
                 });
             });
 
             Promise.any( promises ).then(function( resp ) {
+                var etag = resp.gh.headers.etag;
                 var type = findMimetype( resp.url, resp.gh );
 
                 res.statusCode = resp.gh.statusCode;
                 res.set( "Content-Type", type );
+                res.set( "ETag", etag );
                 res.set( EXPANDED_URL_HEADER, resp.url );
 
                 resp.gh.pipe( res );
