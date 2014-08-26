@@ -12,6 +12,7 @@ var mime = require( "mime" );
 // Express and middlewares
 var express = require( "express" );
 var compression = require( "compression" );
+var Promise = require( "bluebird" );
 
 // -------------------------------------------------------------------------------------------------
 
@@ -26,33 +27,53 @@ app.use( compression({
 }));
 
 app.route( "/:package/:version/*" ).get(function( req, res ) {
-    var command = bower.commands.lookup( req.params.package );
+    var pkgname = req.params.package;
+    var ver = req.params.version.trim().replace( /^v/, "" );
 
-    command.on( "end", function( pkg ) {
-        var url;
+    var cmd = bower.commands.lookup( pkgname );
+    cmd.on( "end", function( pkg ) {
         var slug = pkg ? getSlug( pkg.url ) : null;
 
         if ( !pkg || !slug ) {
             return send( res, 404 );
         }
 
-        url = getGithubUrl( slug );
-        url += req.params.version + "/";
-        url += req.params[ 0 ];
+        cmd = bower.commands.info( pkgname );
+        cmd.on( "end", function( pkg ) {
+            var promises;
 
-        https.get( url, function( ghResp ) {
-            var type = findMimetype( url, ghResp );
-            var status = ghResp.statusCode;
-
-            if ( status >= 400 ) {
-                return send( res, status, url );
+            if ( !~pkg.versions.indexOf( ver ) ) {
+                return send( res, 404 );
             }
 
-            res.statusCode = status;
-            res.set( "Content-Type", type );
-            res.set( EXPANDED_URL_HEADER, url );
+            promises = [ "v", "" ].map(function( prefix ) {
+                return new Promise(function( resolve, reject ) {
+                    var url = getGithubUrl(slug);
+                    url += prefix + ver + "/";
+                    url += req.params[ 0 ];
 
-            ghResp.pipe( res );
+                    https.get( url, function( ghResp ) {
+                        var method = ghResp.statusCode >= 400 ? reject : resolve;
+                        method({
+                            gh: ghResp,
+                            url: url
+                        });
+                    });
+                });
+            });
+
+            Promise.any( promises ).then(function( resp ) {
+                var type = findMimetype( resp.url, resp.gh );
+
+                res.statusCode = resp.gh.statusCode;
+                res.set( "Content-Type", type );
+                res.set( EXPANDED_URL_HEADER, resp.url );
+
+                resp.gh.pipe( res );
+            }, function( err ) {
+                var resp = err[ 0 ];
+                send( res, resp.gh.status, resp.url );
+            });
         });
     });
 });
