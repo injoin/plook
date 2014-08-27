@@ -114,12 +114,21 @@ function getGithubUrl( slug ) {
 }
 
 function findMimetype( url, ghResp ) {
+    var ghContentType = ghResp.headers[ "content-type" ] || "";
     var type = mime.lookup( url );
 
     // If the defaule mime type was used, this means we should rely on GitHub and return their
     // content-type (which is usually plain text or octet-stream).
     // Otherwise, we simply use the mime module returned value.
-    return type === mime.default_type ? ghResp.headers[ "content-type" ] : type;
+    if ( type === mime.default_type ) {
+        type = ghContentType;
+    } else {
+        // If a charset is available from the GitHub response,
+        // we'll use UTF-8 to the returned string as well. GitHub only sends UTF-8 responses.
+        type += ~ghContentType.indexOf( "charset" ) ? "; charset=UTF-8" : "";
+    }
+
+    return type;
 }
 
 function send( res, status, url ) {
@@ -128,6 +137,5 @@ function send( res, status, url ) {
         res.set( EXPANDED_URL_HEADER, url );
     }
 
-    console.log(status);
     return res.send( status, STATUS_CODES[ status ] );
 }
