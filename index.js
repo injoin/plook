@@ -82,7 +82,7 @@ app.route( "/:package/:version/*" ).get(function( req, res ) {
                 resp.gh.pipe( res );
             }, function( err ) {
                 var resp = err[ 0 ];
-                send( res, resp.gh.status, resp.url );
+                send( res, resp.gh.statusCode, resp.url );
             });
         });
     });
@@ -128,5 +128,6 @@ function send( res, status, url ) {
         res.set( EXPANDED_URL_HEADER, url );
     }
 
+    console.log(status);
     return res.send( status, STATUS_CODES[ status ] );
 }
