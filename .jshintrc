@@ -9,5 +9,6 @@
     "globalstrict": true,
     "expr": true,
     "unused": true,
-    "undef": true
+    "undef": true,
+    "predef": [ "-Promise" ]
 }
