@@ -1,0 +1,93 @@
+{
+    "requireCurlyBraces": [
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "try",
+        "catch"
+    ],
+    "requireSpaceAfterKeywords": [
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "switch",
+        "try",
+        "catch"
+    ],
+    "requireSpaceBeforeBlockStatements": true,
+    "requireSpacesInConditionalExpression": true,
+    "requireSpacesInFunctionExpression": {
+        "beforeOpeningCurlyBrace": true
+    },
+    "disallowSpacesInFunctionExpression": {
+        "beforeOpeningRoundBrace": true
+    },
+    "requireBlocksOnNewline": true,
+    "disallowEmptyBlocks": true,
+    "requireSpacesInsideObjectBrackets": "all",
+    "disallowQuotedKeysInObjects": true,
+    "disallowSpaceAfterObjectKeys": true,
+    "requireCommaBeforeLineBreak": true,
+    "requireOperatorBeforeLineBreak": [
+        "?",
+        "+",
+        "-",
+        "*",
+        "/"
+    ],
+    "disallowSpaceAfterPrefixUnaryOperators": [
+        "++",
+        "--",
+        "+",
+        "-",
+        "~",
+        "!"
+    ],
+    "disallowSpaceBeforePostfixUnaryOperators": [
+        "++",
+        "--"
+    ],
+    "requireSpaceBeforeBinaryOperators": [
+        "+",
+        "-",
+        "*",
+        "/",
+        "=",
+        "==",
+        "===",
+        "!=",
+        "!=="
+    ],
+    "requireSpaceAfterBinaryOperators": [
+        "+",
+        "-",
+        "*",
+        "/",
+        "=",
+        "==",
+        "===",
+        "!=",
+        "!=="
+    ],
+    "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
+    "disallowKeywords": [ "with" ],
+    "disallowMultipleLineStrings": true,
+    "disallowMultipleLineBreaks": true,
+    "validateQuoteMarks": "\"",
+    "validateIndentation": 4,
+    "disallowTrailingWhitespace": true,
+    "disallowTrailingComma": true,
+    "disallowKeywordsOnNewLine": [ "else" ],
+    "maximumLineLength": {
+        "value": 100,
+        "tabSize": 4,
+        "allowUrlComments": true
+    },
+    "disallowYodaConditions": true,
+    "requireSpaceAfterLineComment": true,
+    "excludeFiles": [ "node_modules/**" ]
+}
