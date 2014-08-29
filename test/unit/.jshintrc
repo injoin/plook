@@ -11,10 +11,13 @@
     "unused": true,
     "undef": true,
     "predef": [
+        "bower",
         "expect",
         "describe",
         "it",
+        "afterEach",
         "beforeEach",
+        "sinon",
         "-Promise"
     ]
 }
