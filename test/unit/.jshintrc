@@ -1,0 +1,20 @@
+{
+    "node": true,
+    "freeze": true,
+    "noarg": true,
+    "noempty": true,
+    "eqeqeq": true,
+    "eqnull": true,
+    "strict": true,
+    "globalstrict": true,
+    "expr": true,
+    "unused": true,
+    "undef": true,
+    "predef": [
+        "expect",
+        "describe",
+        "it",
+        "beforeEach",
+        "-Promise"
+    ]
+}

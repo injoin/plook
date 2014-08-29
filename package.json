@@ -9,6 +9,13 @@
         "express": "~4.5.1",
         "mime": "~1.2.11"
     },
+    "devDependencies": {
+        "chai": "~1.9.1",
+        "chai-as-promised": "~4.1.1",
+        "jscs": "~1.5.9",
+        "jshint": "~2.5.5",
+        "mocha": "~1.21.4"
+    },
     "engines": {
         "node": "~0.10.20"
     },
@@ -19,6 +26,8 @@
         "url": "git://github.com/injoin/plook.git"
     },
     "scripts": {
-        "start": "node index.js"
+        "start": "node index.js",
+        "lint": "jshint . && jscs .",
+        "test": "npm run lint && mocha test/unit"
     }
 }
