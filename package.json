@@ -14,7 +14,8 @@
         "chai-as-promised": "~4.1.1",
         "jscs": "~1.5.9",
         "jshint": "~2.5.5",
-        "mocha": "~1.21.4"
+        "mocha": "~1.21.4",
+        "sinon": "~1.10.3"
     },
     "engines": {
         "node": "~0.10.20"
