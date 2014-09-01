@@ -1,0 +1,9 @@
+# Dev stuff
+test/
+
+# Manifest files
+.git*
+.jscsrc
+.jshintignore
+.jshintrc
+.travis.yml
