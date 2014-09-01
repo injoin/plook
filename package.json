@@ -21,7 +21,7 @@
         "node": "~0.10.20"
     },
     "homepage": "https://github.com/injoin/plook",
-	"license": "Apache-2.0",
+    "license": "Apache-2.0",
     "repository": {
         "type": "git",
         "url": "git://github.com/injoin/plook.git"
