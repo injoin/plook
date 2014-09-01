@@ -14,7 +14,9 @@ describe( "Plook", function() {
             on: this.lookupEvt
         });
 
-        this.infoEvt = sinon.stub();
+        this.infoEvt = sinon.stub().yields({
+            versions: [ "1.0.0" ]
+        });
         this.info = sinon.stub( bower.commands, "info" ).returns({
             on: this.infoEvt
         });
@@ -61,32 +63,17 @@ describe( "Plook", function() {
         ];
 
         it( "should reject when specied version is not found", function() {
-            var promise;
-            this.infoEvt.yields({
-                versions: [ "0.0.1" ]
-            });
-
-            promise = this.plook.findURLs( "foo", "1.0.0", "bar.js" );
+            var promise = this.plook.findURLs( "foo", "2.0.0", "bar.js" );
             return expect( promise ).to.be.rejectedWith( "Version not found" );
         });
 
         it( "should create array of URLs", function() {
-            var promise;
-            this.infoEvt.yields({
-                versions: [ "1.0.0" ]
-            });
-
-            promise = this.plook.findURLs( "foo", "1.0.0", "bar.js" );
+            var promise = this.plook.findURLs( "foo", "1.0.0", "bar.js" );
             return expect( promise ).to.eventually.deep.equal( expected );
         });
 
         it( "should ignore 'v' prefix in version string when used", function() {
-            var promise;
-            this.infoEvt.yields({
-                versions: [ "1.0.0" ]
-            });
-
-            promise = this.plook.findURLs( "foo", "v1.0.0", "bar.js" );
+            var promise = this.plook.findURLs( "foo", "v1.0.0", "bar.js" );
             return expect( promise ).to.eventually.deep.equal( expected );
         });
 
@@ -98,6 +85,47 @@ describe( "Plook", function() {
 
             promise = this.plook.findURLs( "foo", "bar.js" );
             return expect( promise ).to.eventually.deep.equal( expected );
+        });
+    });
+
+    // ---------------------------------------------------------------------------------------------
+
+    describe( ".get()", function() {
+        beforeEach(function() {
+            this.request = sinon.stub( require( "https" ), "get" );
+        });
+
+        afterEach(function() {
+            this.request.restore();
+        });
+
+        it( "should trigger requests for every found URL", function() {
+            var req = this.request.yields({
+                statusCode: 200
+            });
+
+            return this.plook.get( "foo", "1.0.0", "bar.js" ).finally(function() {
+                return expect( req.callCount ).to.equal( 2 );
+            });
+        });
+
+        it( "should reject when all requests fail", function() {
+            this.request.yields({
+                statusCode: 400
+            });
+
+            return expect( this.plook.get( "foo", "1.0.0", "bar.js" ) ).to.be.rejected;
+        });
+
+        it( "should fulfill with the only successful request", function() {
+            this.request.onCall( 0 ).yields({
+                statusCode: 200
+            });
+            this.request.onCall( 1 ).yields({
+                statusCode: 404
+            });
+
+            return expect( this.plook.get( "foo", "1.0.0", "bar.js" ) ).to.be.fulfilled;
         });
     });
 });
