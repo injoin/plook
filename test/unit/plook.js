@@ -110,11 +110,13 @@ describe( "Plook", function() {
         });
 
         it( "should reject when all requests fail", function() {
+            var actual;
             this.request.yields({
                 statusCode: 400
             });
 
-            return expect( this.plook.get( "foo", "1.0.0", "bar.js" ) ).to.be.rejected;
+            actual = this.plook.get( "foo", "1.0.0", "bar.js" );
+            return expect( actual ).to.be.rejectedWith( "File not found" );
         });
 
         it( "should fulfill with the only successful request", function() {
