@@ -10,5 +10,14 @@
     "expr": true,
     "unused": true,
     "undef": true,
-    "predef": [ "-Promise" ]
+    "predef": [
+        "bower",
+        "expect",
+        "describe",
+        "it",
+        "afterEach",
+        "beforeEach",
+        "sinon",
+        "-Promise"
+    ]
 }
