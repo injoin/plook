@@ -7,6 +7,8 @@ var EXPANDED_URL_HEADER = "X-Expanded-Url";
 var mime = require( "mime" );
 var express = require( "express" );
 var compression = require( "compression" );
+var onFinished = require( "on-finished" );
+var uuid = require( "uuid" );
 
 // Package modules
 var plook = require( "./lib/plook" );
@@ -24,8 +26,30 @@ app.use( compression({
     threshold: 1024
 }));
 
+app.use(function( req, res, next ) {
+    var start = Date.now();
+    var id = uuid.v4();
+
+    req.plook = plook.branch({
+        id: id
+    });
+    res.set( "X-Request-Id", id );
+
+    onFinished( res, function() {
+        req.plook.logger.server(
+            "%d - %s %s - %d ms",
+            res.statusCode,
+            req.method,
+            req.url,
+            Date.now() - start
+        );
+    });
+
+    next();
+});
+
 app.route( "/:package/:version/*" ).get(function( req, res ) {
-    plook.get(
+    req.plook.get(
         req.params.package,
         req.params.version,
         req.params[ 0 ],
@@ -50,7 +74,7 @@ app.route( "/*" ).all(function( req, res ) {
 });
 
 app.listen( process.env.PORT || 3000, function() {
-    console.log( "Listening on port " + this.address().port );
+    plook.logger.server( "Listening on port " + this.address().port );
 });
 
 // -------------------------------------------------------------------------------------------------

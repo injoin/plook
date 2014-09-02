@@ -6,6 +6,7 @@ describe( "Plook", function() {
 
     beforeEach(function() {
         this.plook = new Plook();
+        this.plook.logger.transports.console.silent = true;
 
         this.lookupEvt = sinon.stub().yields({
             url: "git://github.com/foo/bar.git"
@@ -128,6 +129,29 @@ describe( "Plook", function() {
             });
 
             return expect( this.plook.get( "foo", "1.0.0", "bar.js" ) ).to.be.fulfilled;
+        });
+    });
+
+    // ---------------------------------------------------------------------------------------------
+
+    describe( ".branch()", function() {
+        it( "should return another Plook instance", function() {
+            var branch = this.plook.branch();
+            expect( branch ).to.be.an.instanceof( Plook );
+            expect( branch ).to.not.equal( this.plook );
+        });
+
+        it( "should use argument as logger metadata", function() {
+            var meta = {
+                foo: "bar"
+            };
+            var branch = this.plook.branch( meta );
+            var spy = sinon.spy( this.plook.logger, "log" );
+
+            branch.logger.debug( "foo" );
+            expect( spy.args[ 0 ] ).to.contain( meta );
+
+            spy.restore();
         });
     });
 });
