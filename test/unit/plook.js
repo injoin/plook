@@ -6,6 +6,7 @@ describe( "Plook", function() {
 
     beforeEach(function() {
         this.plook = new Plook();
+        this.plook.logger.transports.console.silent = true;
 
         this.lookupEvt = sinon.stub().yields({
             url: "git://github.com/foo/bar.git"
