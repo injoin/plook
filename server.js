@@ -59,6 +59,7 @@ app.route( "/:package/:version/*" ).get(function( req, res ) {
         var type = findMimetype( result.url, result.response );
 
         res.statusCode = result.response.statusCode;
+        res.set( "Access-Control-Allow-Origin", "*" );
         res.set( "Content-Type", type );
         res.set( "ETag", etag );
         res.set( EXPANDED_URL_HEADER, result.url );
