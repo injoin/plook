@@ -53,6 +53,16 @@ describe( "Plook", function() {
         it( "should resolve with repository slug when package in GitHub", function() {
             return expect( this.plook.lookup( "foo" ) ).to.eventually.equal( "foo/bar" );
         });
+
+        it( "should hit cache on second lookup", function() {
+            var ctx = this;
+
+            return ctx.plook.lookup( "foo" ).then(function() {
+                return ctx.plook.lookup( "foo" );
+            }).then(function() {
+                expect( ctx.lookupEvt.callCount ).to.equal( 1 );
+            });
+        });
     });
 
     // ---------------------------------------------------------------------------------------------
