@@ -63,6 +63,17 @@ describe( "Plook", function() {
                 expect( ctx.lookupEvt.callCount ).to.equal( 1 );
             });
         });
+
+        it( "should hit cache when using a branched instance", function() {
+            var ctx = this;
+            var branch = this.plook.branch();
+
+            return ctx.plook.lookup( "foo" ).then(function() {
+                return branch.lookup( "foo" );
+            }).then(function() {
+                expect( ctx.lookupEvt.callCount ).to.equal( 1 );
+            });
+        });
     });
 
     // ---------------------------------------------------------------------------------------------
