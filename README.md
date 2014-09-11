@@ -27,6 +27,37 @@ where:
 We have an online server running in http://plook.injoin.io so that you can use it freely with the
 main Bower registry.
 
+## Running and testing Plook
+Plook requires only that [Node.js](http://nodejs.org) and [NPM](http://npmjs.org) are installed on
+your system.  
+Please ensure you have them before continuing on this tutorial.
+ 
+1. Clone this repository on your computer:
+   
+   ```bash
+   $ git clone https://github.com/injoin/plook.git
+   ```
+2. Next, install NPM dependencies:
+   
+   ```bash
+   $ npm install
+   ```
+   
+3. Finally, run the plook service:
+   
+   ```bash
+   $ npm start
+   ```
+   
+4. In the case you're developing Plook, test your modifications with:
+   
+   ```bash
+   $ npm test
+   ```
+   
+The service will run in the port `3000` by default, but you can easily override this by setting a
+`PORT` env var.
+
 ## Running Plook on your own
 If you want to, you are free to run your Plook instance. However, we just require that you inform us
 about it.  
