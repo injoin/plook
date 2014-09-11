@@ -27,5 +27,10 @@ where:
 We have an online server running in http://plook.injoin.io so that you can use it freely with the
 main Bower registry.
 
+## Running Plook on your own
+If you want to, you are free to run your Plook instance. However, we just require that you inform us
+about it.  
+_If you are willing to do so, please get in touch via __hello [at] injoin.io__._
+
 ## License
 Copyright (c) 2014 InJoin Team Licensed under the [Apache License](LICENSE).
