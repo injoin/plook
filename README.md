@@ -37,9 +37,10 @@ Please ensure you have them before continuing on this tutorial.
    ```bash
    $ git clone https://github.com/injoin/plook.git
    ```
-2. Next, install NPM dependencies:
+2. Next, move into the cloned repository and install NPM dependencies:
    
    ```bash
+   $ cd plook
    $ npm install
    ```
    
