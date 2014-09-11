@@ -104,5 +104,5 @@ function send( res, err ) {
         res.set( EXPANDED_URL_HEADER, err.url );
     }
 
-    return res.send( err.status, err.message );
+    return res.status( err.status ).send( err.message );
 }
