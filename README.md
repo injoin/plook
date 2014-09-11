@@ -58,10 +58,10 @@ Please ensure you have them before continuing on this tutorial.
 The service will run in the port `3000` by default, but you can easily override this by setting a
 `PORT` env var.
 
-## Running Plook on your own
-If you want to, you are free to run your Plook instance. However, we just require that you inform us
-about it.  
-_If you are willing to do so, please get in touch via __hello [at] injoin.io__._
+## Publishing your own Plook instance
+If you want to, you are free to run your own Plook instance. However, we just require that you
+inform us about it if this instance is going to be public in the internet.   
+_If you are willing to do so, please get in touch via hello [at] injoin.io._
 
 ## License
 Copyright (c) 2014 InJoin Team Licensed under the [Apache License](LICENSE).
